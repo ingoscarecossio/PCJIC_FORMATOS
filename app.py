@@ -56,7 +56,7 @@ DB_PATH = DATA_DIR / "fdgc_app.sqlite3"
 #   INITIAL_ADMIN_USER / INITIAL_ADMIN_PASSWORD en st.secrets o variables de entorno.
 # Si DATABASE_URL no existe, la app funciona con SQLite local para desarrollo o demo.
 
-APP_VERSION = "4.0.0-cloud-production"
+APP_VERSION = "7.0.1-hotfix-streamlit-cloud"
 DEFAULT_MAX_EVIDENCE_MB = 15
 
 
@@ -79,9 +79,25 @@ def get_database_url() -> str:
     return str(_get_secret_value("DATABASE_URL", os.getenv("DATABASE_URL", "")) or "").strip()
 
 
+def _database_url_es_placeholder(url: str) -> bool:
+    """Evita que Streamlit Cloud intente conectarse a valores de ejemplo.
+
+    Si el usuario pega secrets.example.toml sin reemplazar DATABASE_URL, psycopg2
+    puede quedarse intentando resolver HOST y la app parece eterna en "Your app is in the oven".
+    """
+    if not url:
+        return False
+    u = url.upper()
+    marcadores = ["USUARIO", "CLAVE", "HOST", "BASE", "PASSWORD", "XXXXX"]
+    return any(m in u for m in marcadores)
+
+
 def usar_postgres() -> bool:
-    url = get_database_url().lower()
-    return url.startswith("postgres://") or url.startswith("postgresql://")
+    url = get_database_url().strip()
+    low = url.lower()
+    if _database_url_es_placeholder(url):
+        return False
+    return low.startswith("postgres://") or low.startswith("postgresql://")
 
 
 def postgres_url_normalizada() -> str:
@@ -103,7 +119,9 @@ class PgConnectionAdapter:
     def __init__(self):
         if psycopg2 is None:
             raise RuntimeError("psycopg2-binary no está instalado. Revise requirements.txt.")
-        self._conn = psycopg2.connect(postgres_url_normalizada())
+        timeout = _safe_int_secret("DB_CONNECT_TIMEOUT", 8)
+        # Timeout explícito: evita que una DATABASE_URL mala deje Streamlit cargando indefinidamente.
+        self._conn = psycopg2.connect(postgres_url_normalizada(), connect_timeout=timeout)
 
     def execute(self, sql: str, params: Tuple[Any, ...] = tuple()):
         cur = self._conn.cursor(cursor_factory=RealDictCursor)
@@ -5055,7 +5073,18 @@ def main():
         initial_sidebar_state="expanded",
     )
     ux_apply_theme(st)
-    init_db()
+    try:
+        init_db()
+    except Exception as exc:
+        st.error("La aplicación inició, pero no pudo preparar la base de datos.")
+        st.markdown("""
+        Esto suele pasar en Streamlit Cloud cuando `DATABASE_URL` está mal escrita,
+        contiene el ejemplo `USUARIO:CLAVE@HOST:5432/BASE`, la base de datos no acepta conexiones externas
+        o el proveedor requiere usar el pooler/puerto correcto.
+        """)
+        st.code(str(exc), language="text")
+        st.info("Corrija los Secrets en Streamlit Cloud y reinicie la app. Para probar sin base externa, quite `DATABASE_URL` y use modo local/demo.")
+        st.stop()
 
     if "auth_user" not in st.session_state:
         pantalla_login(st)
@@ -5867,7 +5896,18 @@ def main():
         initial_sidebar_state="expanded",
     )
     ux_apply_theme(st)
-    init_db()
+    try:
+        init_db()
+    except Exception as exc:
+        st.error("La aplicación inició, pero no pudo preparar la base de datos.")
+        st.markdown("""
+        Esto suele pasar en Streamlit Cloud cuando `DATABASE_URL` está mal escrita,
+        contiene el ejemplo `USUARIO:CLAVE@HOST:5432/BASE`, la base de datos no acepta conexiones externas
+        o el proveedor requiere usar el pooler/puerto correcto.
+        """)
+        st.code(str(exc), language="text")
+        st.info("Corrija los Secrets en Streamlit Cloud y reinicie la app. Para probar sin base externa, quite `DATABASE_URL` y use modo local/demo.")
+        st.stop()
 
     if "auth_user" not in st.session_state:
         pantalla_login(st)
@@ -5940,7 +5980,7 @@ def main():
 # INSTITUCIONAL V7: banco de asignaturas, coherencia académica, aprobación
 # bloqueante, informe ejecutivo y exportación institucional estructurada.
 # =============================================================================
-APP_VERSION = "7.0.0-institucional"
+APP_VERSION = "7.0.1-hotfix-streamlit-cloud"
 MODULO_BANCO = "Banco institucional de asignaturas"
 MODULO_COHERENCIA = "Coherencia académica"
 MODULO_APROBACION_BLOQUEANTE = "Aprobación bloqueante"
@@ -6815,7 +6855,18 @@ def main():
         initial_sidebar_state="expanded",
     )
     ux_apply_theme(st)
-    init_db()
+    try:
+        init_db()
+    except Exception as exc:
+        st.error("La aplicación inició, pero no pudo preparar la base de datos.")
+        st.markdown("""
+        Esto suele pasar en Streamlit Cloud cuando `DATABASE_URL` está mal escrita,
+        contiene el ejemplo `USUARIO:CLAVE@HOST:5432/BASE`, la base de datos no acepta conexiones externas
+        o el proveedor requiere usar el pooler/puerto correcto.
+        """)
+        st.code(str(exc), language="text")
+        st.info("Corrija los Secrets en Streamlit Cloud y reinicie la app. Para probar sin base externa, quite `DATABASE_URL` y use modo local/demo.")
+        st.stop()
 
     if "auth_user" not in st.session_state:
         pantalla_login(st)

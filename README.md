@@ -84,7 +84,7 @@ Archivo principal para Streamlit Cloud: `app.py`.
 Incluye cargador inteligente de Excel, comparador inicial/parcial/final, semáforo de expediente, exportación masiva, hash/QR documental y asistente académico editable. Esta versión está pensada para operar el flujo completo: planeación, concertación, ejecución, seguimiento, informe, cierre y auditoría.
 
 
-## Versión 7.0.0 Institucional
+## Versión 7.0.1 Hotfix Streamlit Cloud
 
 Esta versión convierte la suite en una plataforma académica institucional de punta a punta:
 
@@ -96,3 +96,8 @@ Esta versión convierte la suite en una plataforma académica institucional de p
 - Auditoría por expediente con versiones, observaciones, workflow, bloqueo y registro general.
 
 Archivo principal para Streamlit Cloud: `app.py`.
+
+
+## Hotfix 7.0.1 Streamlit Cloud
+
+Incluye timeout de conexión a PostgreSQL/Supabase, detección de `DATABASE_URL` de ejemplo y pantalla de diagnóstico cuando la base de datos falla al iniciar. Esto evita que la app se quede cargando indefinidamente en `Your app is in the oven`.

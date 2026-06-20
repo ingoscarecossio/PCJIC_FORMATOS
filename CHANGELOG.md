@@ -1,3 +1,10 @@
+# 7.0.1 - Hotfix Streamlit Cloud
+
+- Se agregó timeout explícito a conexiones PostgreSQL/Supabase.
+- Se detectan valores de ejemplo en `DATABASE_URL` para no bloquear el arranque.
+- Se agregó pantalla de diagnóstico cuando `init_db()` falla.
+- Se documentó el problema `Your app is in the oven`.
+
 # CHANGELOG
 
 ## 6.0.0-suite-inteligente
