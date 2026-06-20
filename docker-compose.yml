@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: fdgc_postgres
+    environment:
+      POSTGRES_DB: fdgc
+      POSTGRES_USER: fdgc_user
+      POSTGRES_PASSWORD: fdgc_password_change_me
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fdgc_user -d fdgc"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fdgc:
+    build: .
+    container_name: fdgc_app
+    ports:
+      - "8501:8501"
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql://fdgc_user:fdgc_password_change_me@postgres:5432/fdgc
+      INITIAL_ADMIN_USER: admin
+      INITIAL_ADMIN_PASSWORD: Cambiar_Esta_Clave_123*
+      INITIAL_ADMIN_NAME: Administrador del sistema
+      INITIAL_ADMIN_EMAIL: admin@institucion.edu.co
+      MAX_EVIDENCE_MB: 15
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
