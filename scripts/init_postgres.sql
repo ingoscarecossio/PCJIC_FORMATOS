@@ -78,3 +78,54 @@ CREATE TABLE IF NOT EXISTS artefactos (
 CREATE INDEX IF NOT EXISTS idx_cursos_estado ON cursos(estado);
 CREATE INDEX IF NOT EXISTS idx_cursos_owner ON cursos(propietario_usuario);
 CREATE INDEX IF NOT EXISTS idx_evidencias_curso ON evidencias(curso_id);
+
+
+-- V7 Institucional
+CREATE TABLE IF NOT EXISTS asignaturas_base (
+    id SERIAL PRIMARY KEY,
+    codigo TEXT,
+    nombre TEXT NOT NULL,
+    programa TEXT,
+    area_formacion TEXT,
+    creditos TEXT,
+    htp DOUBLE PRECISION DEFAULT 0,
+    hti DOUBLE PRECISION DEFAULT 0,
+    tipo_asignatura TEXT,
+    justificacion TEXT,
+    competencias TEXT,
+    resultados TEXT,
+    objetivos TEXT,
+    metodologia TEXT,
+    ambientes TEXT,
+    medios TEXT,
+    bibliografia TEXT,
+    unidades_json TEXT DEFAULT '[]',
+    evaluaciones_json TEXT DEFAULT '[]',
+    activo INTEGER DEFAULT 1,
+    creado_por TEXT,
+    creado_en TEXT,
+    actualizado_en TEXT
+);
+
+CREATE TABLE IF NOT EXISTS workflow_eventos (
+    id SERIAL PRIMARY KEY,
+    curso_id INTEGER,
+    evento TEXT NOT NULL,
+    estado_anterior TEXT,
+    estado_nuevo TEXT,
+    resultado TEXT,
+    detalle TEXT,
+    hash_expediente TEXT,
+    usuario TEXT,
+    rol TEXT,
+    creado_en TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS curso_bloqueos (
+    curso_id INTEGER PRIMARY KEY,
+    bloqueado INTEGER DEFAULT 0,
+    motivo TEXT,
+    hash_bloqueo TEXT,
+    bloqueado_por TEXT,
+    bloqueado_en TEXT
+);

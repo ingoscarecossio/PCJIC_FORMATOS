@@ -61,3 +61,14 @@ Desde **Copias y restauración**, descargue un ZIP con:
 - Generación de plantilla Excel correcta.
 - Carga y descarga de evidencia probada.
 - Descarga de respaldo probada.
+
+## Nota versión 5.0 Next Level
+
+Esta versión agrega tablas de gobierno académico:
+
+- `curso_versiones`
+- `observaciones_curso`
+- `tareas_alertas`
+- `parametros_app`
+
+La aplicación crea estas tablas automáticamente al iniciar. Para producción se recomienda hacer el primer arranque con un usuario administrador y validar el módulo **Diagnóstico productivo**.

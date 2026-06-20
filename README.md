@@ -1,84 +1,98 @@
-# Gestor Académico FD-GC71 / FD-GC72 — Cloud Production
+# Gestor académico FD-GC71 / FD-GC72 con login y perfiles
 
-Aplicación en **Streamlit** para planear cursos, generar la **Guía Didáctica FD-GC71**, construir plantillas de evaluación, alimentar el **Informe Académico FD-GC72**, controlar usuarios/perfiles, registrar evidencias y mantener auditoría.
+Aplicación en Streamlit para gestionar el flujo completo de planeación, evaluación e informe académico:
 
-## Qué trae esta versión productiva
+- **FD-GC71**: guía didáctica, concertación de evaluación, módulos/unidades, intensidad horaria, calendario automático de sesiones y plantilla Excel de evaluación.
+- **FD-GC72**: informe académico alimentado desde listado tradicional de clase y plantillas de evaluación de mitad/final del curso.
+- **Login local** con base SQLite.
+- **Perfiles de usuario**: Administrador, Coordinador, Docente y Consulta.
+- **Auditoría básica** de ingresos y cambios de seguridad.
 
-- Compatible con **Streamlit Community Cloud**.
-- Modo local con **SQLite** para desarrollo.
-- Modo productivo con **PostgreSQL/Supabase** mediante `DATABASE_URL`.
-- Login con perfiles: Administrador, Coordinador, Docente y Consulta.
-- Contraseñas con PBKDF2-HMAC-SHA256, salt individual y política reforzada en producción.
-- Bloqueo temporal por intentos fallidos.
-- Auditoría de ingresos y acciones sensibles.
-- Evidencias persistidas en base de datos como respaldo, con caché local opcional.
-- Descarga de respaldo completo en ZIP: tablas, evidencias y manifiesto.
-- `.gitignore`, `runtime.txt`, `secrets.example.toml` y script SQL opcional para PostgreSQL.
-
-## Estructura recomendada del repositorio
-
-```text
-.
-├── app.py
-├── requirements.txt
-├── runtime.txt
-├── .gitignore
-├── .streamlit/
-│   ├── config.toml
-│   └── secrets.example.toml
-├── plantilla/
-│   ├── FD-GC71.docx
-│   ├── FD-GC72-Informe_Academico.docx
-│   ├── logo_poli.png
-│   └── logo_icontec.png
-├── scripts/
-│   ├── init_postgres.sql
-│   ├── smoke_test.py
-│   └── run_windows.ps1
-└── docs/
-```
-
-## Ejecución local
+## Instalación en Windows
 
 ```powershell
+cd programa_fd_gc71_gc72_streamlit
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-En local, si no configura `DATABASE_URL`, se usa SQLite en `app_data/fdgc_app.sqlite3`.
+## Credencial inicial
 
-## Despliegue en Streamlit Cloud
+La primera vez que corre la aplicación se crea automáticamente un administrador local:
 
-1. Suba este proyecto a GitHub.
-2. Cree una base PostgreSQL, por ejemplo en Supabase.
-3. En Streamlit Cloud, cree una app apuntando a `app.py`.
-4. Configure los secretos desde **App settings > Secrets** usando el contenido base de `.streamlit/secrets.example.toml`.
-5. Cambie `INITIAL_ADMIN_PASSWORD` por una contraseña fuerte.
-6. Inicie la app, entre con el usuario inicial y cambie la contraseña.
-7. Cree usuarios nominales para docentes/coordinadores.
+- Usuario: `admin`
+- Contraseña: `Admin123*`
 
-## Secretos mínimos para producción
+Al ingresar, cambie la contraseña desde **Mi cuenta**. Luego cree los usuarios reales desde **Usuarios y perfiles**.
 
-```toml
-APP_ENV = "production"
-DATABASE_URL = "postgresql://USUARIO:CLAVE@HOST:5432/BASE"
-INITIAL_ADMIN_USER = "admin"
-INITIAL_ADMIN_PASSWORD = "Cambiar_Esta_Clave_123*"
-INITIAL_ADMIN_NAME = "Administrador del sistema"
-INITIAL_ADMIN_EMAIL = "admin@institucion.edu.co"
-MAX_EVIDENCE_MB = 15
+## Perfiles
+
+| Perfil | Permisos principales |
+|---|---|
+| Administrador | Acceso total, usuarios, perfiles, auditoría, FD-GC71 y FD-GC72 |
+| Coordinador | Planeación, informe académico, revisión y auditoría |
+| Docente | Planeación, informe académico y cuenta propia |
+| Consulta | Inicio, ayuda y cuenta propia |
+
+## Flujo recomendado
+
+1. Ingresar como administrador y crear docentes/coordinadores.
+2. El docente diligencia FD-GC71: identificación, textos académicos, unidades, intensidad, horarios y evaluación.
+3. La app genera automáticamente el calendario de sesiones según los días y horarios de clase.
+4. Descargar FD-GC71 en Word y plantilla Excel de evaluación.
+5. A mitad/final del curso, cargar listado tradicional y plantilla de calificaciones.
+6. Generar FD-GC72 con métricas calculadas y análisis descriptivo por curso.
+
+## Archivos de datos
+
+La base local se crea en:
+
+```text
+app_data/fdgc_app.sqlite3
 ```
 
-## Verificación rápida
+Esa carpeta se puede respaldar para conservar usuarios, auditoría y datos locales.
 
-```powershell
-python scripts\smoke_test.py
-```
+## Notas técnicas
 
-El smoke test genera FD-GC71, Excel de evaluación, calendario ICS y paquete ZIP de prueba.
+- El login es local, suficiente para operación interna en equipo o red controlada.
+- Para despliegue institucional con varios usuarios, ubique el proyecto en un servidor interno y proteja la carpeta `app_data`.
+- Para autenticación corporativa futura se puede conectar contra LDAP, Microsoft Entra ID o Google Workspace.
 
-## Recomendación institucional
 
-Para operación real, use PostgreSQL externo. SQLite queda como modo local o demostración. En Streamlit Cloud el sistema de archivos no debe tratarse como archivo institucional permanente; por eso esta versión guarda la evidencia también en base de datos.
+## Versión 5.0.0 Suite Inteligente
+
+Esta versión mejora sustancialmente la experiencia de usuario para operación institucional en Streamlit:
+
+- Login rediseñado con pantalla institucional y mensajes de seguridad.
+- Tema visual premium con tarjetas, métricas, contenedores, pestañas y botones consistentes.
+- Navegación lateral con búsqueda de módulos, iconografía, descripción contextual y barra de progreso operativo.
+- Panel de inicio tipo centro de mando con accesos rápidos, alertas, estado técnico y ruta operativa.
+- Hero institucional por módulo con ambiente, base de datos, versión y perfil activo.
+- Ruta visual del expediente: crear → planear → evidenciar → revisar → informar → cerrar.
+- Centro de control rediseñado con filtros, pestañas, mapa de riesgo, gráficos y acciones sugeridas.
+- Reportes ejecutivos con filtros visibles, métricas de corte y descargas más claras.
+- Microcopy operativo para orientar al docente, coordinador y administrador sin saturar la pantalla.
+
+Archivo principal para Streamlit Cloud: `app.py`.
+
+
+## Versión 6.0.0 - Suite Inteligente
+
+Incluye cargador inteligente de Excel, comparador inicial/parcial/final, semáforo de expediente, exportación masiva, hash/QR documental y asistente académico editable. Esta versión está pensada para operar el flujo completo: planeación, concertación, ejecución, seguimiento, informe, cierre y auditoría.
+
+
+## Versión 7.0.0 Institucional
+
+Esta versión convierte la suite en una plataforma académica institucional de punta a punta:
+
+- Banco institucional de asignaturas con unidades, resultados, metodología, bibliografía y evaluación base.
+- Motor de coherencia académica: cruza resultados de aprendizaje, contenidos, evaluación, horas, evidencias y observaciones.
+- Aprobación bloqueante: los expedientes aprobados o cerrados quedan bloqueados con hash y evento de workflow.
+- Informe ejecutivo institucional en Excel y Word para coordinación/comité.
+- Exportación institucional estructurada por período, programa y curso.
+- Auditoría por expediente con versiones, observaciones, workflow, bloqueo y registro general.
+
+Archivo principal para Streamlit Cloud: `app.py`.

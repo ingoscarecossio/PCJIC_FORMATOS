@@ -1,3 +1,1 @@
-FDGC Academic Manager
-Version: 4.0.0-cloud-production
-Mode: Streamlit Cloud ready + PostgreSQL/Supabase + SQLite local fallback
+7.0.0-institucional

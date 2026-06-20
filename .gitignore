@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+
+# Streamlit secrets reales
+.streamlit/secrets.toml
+
+# Datos operativos locales
+app_data/
+salida_demo/
+*.sqlite3
+*.db
+
+# Exportaciones temporales
+*.log
+.DS_Store
+Thumbs.db

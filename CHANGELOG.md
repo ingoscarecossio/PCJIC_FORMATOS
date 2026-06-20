@@ -1,24 +1,55 @@
+# CHANGELOG
+
+## 6.0.0-suite-inteligente
+
+- Nuevo cargador inteligente de Excel con detección de encabezados y mapeo asistido.
+- Nuevo comparador de cortes: listado inicial vs parcial vs final.
+- Nuevo semáforo del expediente por curso.
+- Nueva exportación masiva institucional con ZIP maestro e índice CSV.
+- Nuevo módulo de hash SHA-256 y QR documental.
+- Nuevo asistente académico de redacción editable para FD-GC71 y FD-GC72.
+- Menú, permisos y pantalla de inicio ajustados para flujo inteligente.
+
 # Changelog
 
-## 4.0.0-cloud-production
+## 3.0 Enterprise
+- Agrega expediente académico por curso.
+- Agrega centro de control con métricas.
+- Agrega planeador superior con validación, DOCX, Excel, ICS, CSV, JSON y ZIP.
+- Agrega evidencias y soportes por curso.
+- Agrega validador institucional.
+- Agrega respaldos completos.
+- Amplía perfiles y permisos.
 
-- Optimización para despliegue en Streamlit Community Cloud.
-- Soporte productivo para PostgreSQL/Supabase mediante `DATABASE_URL`.
-- Modo local con SQLite como fallback de desarrollo.
-- Credenciales iniciales parametrizadas por `st.secrets` o variables de entorno.
-- Política de contraseñas reforzada en `APP_ENV=production`.
-- Bloqueo temporal por intentos fallidos de login.
-- Evidencias guardadas también en base de datos para no depender del sistema de archivos efímero.
-- Respaldo ZIP mejorado con tablas CSV, evidencias y manifiesto.
-- Diagnóstico productivo dentro de la app.
-- `.gitignore`, `runtime.txt`, `secrets.example.toml` y `scripts/init_postgres.sql`.
-- Dockerfile con healthcheck y docker-compose con PostgreSQL.
+## 2.0 Login y perfiles
+- Login local con SQLite.
+- Usuarios, perfiles, auditoría y cambio de contraseña.
 
-## 3.0.0-enterprise
+## 1.0 Base
+- FD-GC71 y FD-GC72 con Streamlit.
 
-- Expediente académico por curso.
-- Centro de control académico.
-- Planeador superior.
-- Evidencias y soportes.
-- Validador institucional.
-- Copias de seguridad.
+
+## 5.0.0-ux-premium
+
+### Diseño y experiencia de usuario
+- Nuevo sistema visual premium para Streamlit: fondo institucional, tarjetas, botones, métricas, pestañas y contenedores con mejor jerarquía visual.
+- Nueva pantalla de login con mensaje institucional y orientación de primera instalación.
+- Sidebar rediseñado con búsqueda, iconos, descripciones, progreso operativo y cierre de sesión claro.
+- Panel de inicio convertido en centro de mando con accesos rápidos, alertas y estado técnico.
+- Hero contextual por módulo y ruta visual del expediente académico.
+- Centro de control rediseñado con filtros, gráficos y acciones sugeridas.
+- Reportes ejecutivos con experiencia de filtrado y descarga más clara.
+
+### Compatibilidad
+- Mantiene generación de FD-GC71, FD-GC72, plantillas Excel, calendario ICS, ZIP de expediente, auditoría, aprobaciones, versionamiento y despliegue Streamlit Cloud.
+
+
+## 7.0.0-institucional
+
+- Agregado banco institucional de asignaturas.
+- Agregado motor de coherencia académica con score, hallazgos, checklist y matriz RA-contenido-evaluación.
+- Agregado flujo de aprobación bloqueante con bloqueo/desbloqueo auditado.
+- Agregado informe ejecutivo institucional descargable en Excel y Word.
+- Agregada exportación institucional estructurada en ZIP maestro.
+- Agregada auditoría por expediente.
+- Ampliados permisos por rol y navegación UX.
